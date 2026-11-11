@@ -11,8 +11,8 @@ window.SITE_CONFIG = {
   background: { source: 'https://ru.pinterest.com/pin/584060645470659995/', video: 'assets/video/winter-optimized.mp4', poster: 'assets/video/winter-poster.jpg' },
   music: { src: 'assets/audio/lost-angeles-quiet.m4a', title: 'FRIENDLY THUG 52 NGG — Lost Angeles' },
   profile: {
-    avatar: 'assets/profile/ilnar.png',
-    avatarAlt: 'Чёрно-белый портрет Ильнара в очках и наушниках',
+    avatar: 'assets/profile/ilnar-framed.jpg',
+    avatarAlt: 'Чёрно-белый портрет Ильнара в очках и наушниках с белой рваной рамкой',
     title: 'О себе',
     description: 'Ильнар, 17 лет. Подробнее — справа.',
     mobileDescription: 'Ильнар, 17 лет. Подробнее — ниже.',

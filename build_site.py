@@ -9,7 +9,7 @@ MAX_BYTES = 512 * 1024 * 1024
 MAX_FILES = 2000
 ROOT_FILES = (
     "index.html", "app.js", "config.js", "content.js", "style.css", "fonts.css",
-    "glass-button.js", "favicon.ico", "favicon.svg", "apple-touch-icon.png",
+    "glass-button.js", "wet-glass.css", "favicon.ico", "favicon.svg", "apple-touch-icon.png",
     "icons.html", "icon-options.css", "icon-preview.html", "fonts.html", "font-comparison.css",
     "CREDITS.md", "REFERENCE_CREDITS.md",
 )

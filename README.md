@@ -6,7 +6,7 @@ The editable site files are in the repository root. Change photo, video and
 project captions in `content.js`. Profile and social links are in `config.js`.
 
 Media, fonts, icon variants and their licenses are preserved in
-`site-assets-01.zip`, `site-assets-02.zip` and `site-assets-03.zip`. The archives
+`site-assets-01.zip`, `site-assets-02.zip` and `site-assets-03.zip` and `site-assets-04.zip`. The archives
 keep each browser-uploaded file below GitHub's upload size limit. They are
 expanded during publication; visitors receive ordinary static files.
 
@@ -15,7 +15,7 @@ The Pages workflow checks JavaScript syntax and publishes that directory after
 changes to `main`. In repository Settings → Pages, the source must be GitHub
 Actions. The public site address is:
 
-https://zakievilnar2009-cmyk.github.io/BIO-SITE/
+https://godlyecho.github.io/
 
 Photos and videos belong to the site owner. See `CREDITS.md` and
 `REFERENCE_CREDITS.md` for other resources and licenses.

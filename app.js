@@ -17,8 +17,6 @@ const icon=name=>name.endsWith('.svg')?'assets/icons/social/'+name:'assets/icons
 const normalize=items=>items.map(item=>({...item,subtitle:item.caption||'',src:item.video||item.image||'',poster:item.video?item.image:undefined}));
 const sections=[
  {id:'profile',label:C.name,icon:'profile-msn.png',items:[{title:C.profile.title,subtitle:C.profile.description,src:C.profile.avatar,alt:C.profile.avatarAlt,profile:true}]},
- {id:'photos',label:'Мои Фотки',icon:'photos-album-crystal.png',items:normalize(content.photos),type:'photo'},
- {id:'videos',label:'Видосы',icon:'skate-noto.png',items:normalize(content.videos),type:'video'},
  {id:'projects',label:'Проекты',icon:'projects-folder.png',description:content.projectsDescription,items:normalize(content.projects)},
  {id:'links',label:'Линки',icon:'links.png',items:C.links},
  {id:'about',label:'Об этом сайте',icon:'info.png',items:[
@@ -168,7 +166,7 @@ function playBackground(){if(!document.hidden)bg.play().catch(()=>{})}
 bg.addEventListener('canplay',playBackground);bg.addEventListener('error',()=>{console.error('Background video failed:',bg.currentSrc,bg.error?.code)});
 document.addEventListener('pointerdown',playBackground,{once:true});document.addEventListener('keydown',playBackground,{once:true});
 const music=$('#ambientMusic'),musicToggle=$('#musicToggle'),soundDock=$('#soundDock'),mixer=$('#musicMixer'),slider=$('#musicVolume'),muteButton=$('#mixerMute');
-let musicWanted=true,volume=15,lastVolume=15,audioContext=null,gainNode=null,mixerOpen=false,draggingVolume=false,closeTimer;
+let musicWanted=true,volume=15,lastVolume=15,audioContext=null,gainNode=null,mixerOpen=false;
 try{const saved=JSON.parse(localStorage.getItem('godlyecho.sound')||'null');if(saved){volume=Math.max(0,Math.min(100,Number(saved.volume)||0));lastVolume=Math.max(1,Math.min(100,Number(saved.lastVolume)||15));musicWanted=saved.enabled===true&&volume>0}}catch{}
 function saveSound(){try{localStorage.setItem('godlyecho.sound',JSON.stringify({enabled:musicWanted,volume,lastVolume}))}catch{}}
 music.src=C.music.src;music.preload='auto';music.volume=volume/100;
@@ -178,16 +176,31 @@ function prepareAudio(){
  if(location.protocol!=='file:'&&!audioContext){const Audio=window.AudioContext||window.webkitAudioContext;if(Audio)try{audioContext=new Audio();gainNode=audioContext.createGain();gainNode.gain.value=volume/100;const source=audioContext.createMediaElementSource(music);source.connect(gainNode);gainNode.connect(audioContext.destination);music.volume=1;audioContext.addEventListener('statechange',updateMusicButton)}catch{gainNode=null;audioContext=null}}
  if(audioContext?.state==='suspended')audioContext.resume().catch(()=>{});applyGain();
 }
-function updateMusicButton(){const playing=!music.paused&&!music.ended&&volume>0&&audioContext?.state!=='suspended';musicToggle.setAttribute('aria-pressed',String(playing));musicToggle.setAttribute('aria-label',playing?'Выключить музыку':'Включить музыку');musicToggle.title=C.music.title;muteButton.setAttribute('aria-pressed',String(!musicWanted||volume===0));muteButton.setAttribute('aria-label',!musicWanted||volume===0?'Включить музыку':'Выключить музыку')}
+function updateMusicButton(){
+ const muted=!musicWanted||volume===0;
+ soundDock.classList.toggle('is-muted',muted);
+ musicToggle.setAttribute('aria-label','Открыть регулятор громкости'+(muted?' — звук выключен':''));
+ musicToggle.title=C.music.title;
+ muteButton.setAttribute('aria-pressed',String(muted));
+ muteButton.setAttribute('aria-label',muted?'Включить музыку':'Выключить музыку');
+}
 function pauseMusic(){music.pause();updateMusicButton()}
 function playMusic(){if(!entered||!musicWanted||volume===0||document.hidden||($('#viewer').open&&$('#viewer').dataset.type==='video'))return;music.play().then(()=>{if(!musicWanted||document.hidden||($('#viewer').open&&$('#viewer').dataset.type==='video'))music.pause();updateMusicButton()}).catch(error=>{updateMusicButton();console.warn('Music playback pending user interaction:',error.name)})}
 function syncVolume(){slider.value=String(volume);slider.style.setProperty('--level',volume+'%');slider.setAttribute('aria-valuetext',volume+'%');$('#volumeValue').value=volume+'%'}
 function setVolume(value){volume=Math.max(0,Math.min(100,Number(value)||0));if(volume>0)lastVolume=volume;musicWanted=volume>0;syncVolume();saveSound();prepareAudio();if(musicWanted)playMusic();else pauseMusic();updateMusicButton()}
 function toggleMute(){setVolume(musicWanted&&volume>0?0:lastVolume||15)}
-function openMixer(open){clearTimeout(closeTimer);mixerOpen=open;soundDock.classList.toggle('open',open);mixer.inert=!open;musicToggle.setAttribute('aria-expanded',String(open))}
-soundDock.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')openMixer(true)});soundDock.addEventListener('pointerleave',()=>{closeTimer=setTimeout(()=>{if(!draggingVolume&&!soundDock.contains(document.activeElement))openMixer(false)},180)});soundDock.addEventListener('focusin',()=>openMixer(true));soundDock.addEventListener('focusout',()=>{closeTimer=setTimeout(()=>{if(!soundDock.contains(document.activeElement))openMixer(false)},100)});
-slider.addEventListener('pointerdown',()=>{draggingVolume=true});document.addEventListener('pointerup',()=>{draggingVolume=false});slider.addEventListener('input',()=>setVolume(slider.value));muteButton.onclick=toggleMute;musicToggle.onclick=()=>{toggleMute();if(!pointer.matches)openMixer(true)};
-document.addEventListener('pointerdown',event=>{if(!event.target.closest('.sound-dock'))openMixer(false)});soundDock.addEventListener('keydown',event=>{if(event.key==='Escape'){musicToggle.focus({preventScroll:true});openMixer(false)}});
+function openMixer(open){
+ mixerOpen=open;soundDock.classList.toggle('open',open);mixer.inert=!open;
+ mixer.setAttribute('aria-hidden',String(!open));
+ musicToggle.setAttribute('aria-expanded',String(open));
+ if(open)muteButton.focus({preventScroll:true});
+ musicToggle.inert=open;
+}
+slider.addEventListener('input',()=>setVolume(slider.value));muteButton.onclick=toggleMute;
+musicToggle.onclick=()=>openMixer(true);
+document.addEventListener('pointerdown',event=>{if(mixerOpen&&!event.target.closest('.sound-dock'))openMixer(false)});
+soundDock.addEventListener('focusout',event=>{if(mixerOpen&&!soundDock.contains(event.relatedTarget))openMixer(false)});
+soundDock.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();openMixer(false);musicToggle.focus({preventScroll:true})}});
 music.addEventListener('play',updateMusicButton);music.addEventListener('pause',updateMusicButton);music.addEventListener('error',()=>console.error('Audio failed:',music.currentSrc,music.error?.code));
 motion.addEventListener('change',()=>{paint();scrollSelection(current,false)});
 $('#enterSite').onclick=event=>{if(entered)return;const keyboard=event.detail===0;entered=true;prepareAudio();playMusic();playBackground();$('#enterSite').disabled=true;$('#entryScreen').classList.add('leaving');document.body.classList.remove('entry-pending');$('#xmb').inert=false;$('.controls').inert=false;soundDock.inert=false;paint();setTimeout(()=>{$('#entryScreen').hidden=true;if(keyboard)tabs[current].focus({preventScroll:true})},motion.matches?120:450)};
