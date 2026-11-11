@@ -7,7 +7,7 @@ window.SITE_CONFIG = {
   iconStyle: 'duotone',
   fontStyle: 'unbounded',
   // Вставь исходный URL пина в source, чтобы он появился в «Об этом сайте».
-  visits: { badge: 'https://hits.sh/godlyecho-xmb-10nov.basics-pineal-9i.chatgpt.site.svg?style=flat-square&label=views&color=transparent&labelColor=transparent', timeoutMs: 8000 },
+  visits: { badge: 'https://hits.dwyl.com/godlyecho/godlyecho.svg?style=flat-square', timeoutMs: 8000 },
   background: { source: 'https://ru.pinterest.com/pin/584060645470659995/', video: 'assets/video/winter-optimized.mp4', poster: 'assets/video/winter-poster.jpg' },
   music: { src: 'assets/audio/lost-angeles-quiet.m4a', title: 'FRIENDLY THUG 52 NGG — Lost Angeles' },
   profile: {

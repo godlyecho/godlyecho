@@ -99,9 +99,27 @@ function move(delta){
 }
 function loadVisits(wrap,text){
  if(!C.visits?.badge||location.protocol==='file:')return;
- const img=new Image();let settled=false;const timer=setTimeout(()=>finish(false),C.visits.timeoutMs||8000);
- function finish(ok){if(settled)return;settled=true;clearTimeout(timer);img.onload=img.onerror=null;if(!ok)return;const count=el('span','visit-count');img.alt='Общее число открытий страницы';count.append(img);const title=text.querySelector('.title');title.classList.add('visit-title');title.append(count);wrap.hidden=false;layoutLists();paint()}
- img.crossOrigin='anonymous';img.referrerPolicy='no-referrer';img.onload=()=>finish(img.naturalWidth>43&&img.naturalHeight>0);img.onerror=()=>finish(false);img.src=C.visits.badge;
+ const img=new Image();let settled=false;
+ const timer=setTimeout(()=>finish(false),C.visits.timeoutMs||8000);
+ function finish(ok){
+  if(settled)return;settled=true;clearTimeout(timer);img.onload=img.onerror=null;
+  if(!ok)return;
+  // Keep only the badge's white digits; remove its colored rectangles.
+  if(!document.getElementById('visit-ink')){
+   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg'),filter=document.createElementNS(ns,'filter'),matrix=document.createElementNS(ns,'feColorMatrix');
+   svg.setAttribute('width','0');svg.setAttribute('height','0');svg.setAttribute('aria-hidden','true');svg.style.position='absolute';
+   filter.id='visit-ink';filter.setAttribute('color-interpolation-filters','sRGB');
+   matrix.setAttribute('type','matrix');matrix.setAttribute('values','0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  3 3 3 0 -7');
+   filter.append(matrix);svg.append(filter);document.body.append(svg);
+  }
+  const count=el('span','visit-count');img.alt='Общее число открытий страницы';count.append(img);
+  const title=text.querySelector('.title');title.classList.add('visit-title');title.append(count);
+  wrap.hidden=false;layoutLists();paint();
+ }
+ // Image embeds work across origins without a CORS-enabled JSON API.
+ // This request runs once per page load, never on section changes.
+ img.referrerPolicy='no-referrer';img.onload=()=>finish(img.naturalWidth===80&&img.naturalHeight===20);
+ img.onerror=()=>finish(false);img.src=C.visits.badge;
 }
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2500)}
 function openItem(item,section){
