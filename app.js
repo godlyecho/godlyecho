@@ -22,7 +22,7 @@ const sections=[
  {id:'about',label:'Об этом сайте',icon:'info.png',items:[
   {title:'Phosphor Duotone — иконки',subtitle:'Двухтонные иконки сайта',url:'https://phosphoricons.com/',icon:'palette.svg'},
   {title:'Unbounded — шрифт',subtitle:'Шрифт сайта · Google Fonts',url:'https://fonts.google.com/specimen/Unbounded',icon:'text-aa.svg'},
-  ...(C.background.source?[{title:'Видеофон — Pinterest',subtitle:'Оригинальное видео',url:C.background.source,icon:'film-strip.svg'}]:[]),
+  ...(C.background.source?[{title:'Видеофон — '+(C.background.sourceLabel||'Pinterest'),subtitle:'Оригинальное видео',url:C.background.source,icon:'film-strip.svg'}]:[]),
   {title:'Визиты',subtitle:'Открытия страницы',counter:true,note:true,icon:'info.png'}
  ]}
 ];
@@ -202,7 +202,7 @@ document.addEventListener('pointerdown',event=>{if(mixerOpen&&!event.target.clos
 soundDock.addEventListener('focusout',event=>{if(mixerOpen&&!soundDock.contains(event.relatedTarget))openMixer(false)});
 soundDock.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();openMixer(false);musicToggle.focus({preventScroll:true})}});
 music.addEventListener('play',updateMusicButton);music.addEventListener('pause',updateMusicButton);music.addEventListener('error',()=>console.error('Audio failed:',music.currentSrc,music.error?.code));
-motion.addEventListener('change',()=>{paint();scrollSelection(current,false)});
+motion.addEventListener('change',()=>{paint();scrollSelection(current,false);playBackground()});
 $('#enterSite').onclick=event=>{if(entered)return;const keyboard=event.detail===0;entered=true;prepareAudio();playMusic();playBackground();$('#enterSite').disabled=true;$('#entryScreen').classList.add('leaving');document.body.classList.remove('entry-pending');$('#xmb').inert=false;$('.controls').inert=false;soundDock.inert=false;paint();setTimeout(()=>{$('#entryScreen').hidden=true;if(keyboard)tabs[current].focus({preventScroll:true})},motion.matches?120:450)};
 document.addEventListener('visibilitychange',()=>{if(document.hidden){bg.pause();pauseMusic();openMixer(false)}else{playBackground();playMusic()}});
 syncVolume();updateMusicButton();updateInputHint();layoutLists();paint();scrollSelection(current,false);playBackground();$('#enterSite').focus({preventScroll:true});

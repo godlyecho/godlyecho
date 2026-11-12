@@ -8,7 +8,7 @@ window.SITE_CONFIG = {
   fontStyle: 'unbounded',
   // Вставь исходный URL пина в source, чтобы он появился в «Об этом сайте».
   visits: { badge: 'https://hits.dwyl.com/godlyecho/godlyecho.svg?style=flat-square', timeoutMs: 8000 },
-  background: { source: 'https://ru.pinterest.com/pin/584060645470659995/', video: 'assets/video/winter-optimized.mp4', poster: 'assets/video/winter-poster.jpg' },
+  background: { source: 'assets/video/winter-night-silent.mp4', sourceLabel: 'загруженный ролик', video: 'assets/video/winter-night-silent.mp4', poster: 'assets/video/winter-night-poster.jpg' },
   music: { src: 'assets/audio/lost-angeles-quiet.m4a', title: 'FRIENDLY THUG 52 NGG — Lost Angeles' },
   profile: {
     avatar: 'assets/profile/ilnar-framed.jpg',
@@ -25,6 +25,8 @@ window.SITE_CONFIG = {
     { title: 'YouTube', subtitle: '@godlyechoo', url: 'https://www.youtube.com/@godlyechoo', icon: 'youtube.svg' },
     { title: 'Twitch', subtitle: 'twitch.tv/godlyecho', url: 'https://www.twitch.tv/godlyecho', icon: 'twitch.svg' },
     { title: 'TikTok', subtitle: '@godlyecho', url: 'https://www.tiktok.com/@godlyecho', icon: 'tiktok.svg' },
+    { title: 'Instagram', subtitle: '@god1yecho', url: 'https://www.instagram.com/god1yecho?xtok=cTg2bG0yb2d6M3Jn&utm_source=qr', icon: 'instagram.svg' },
+    { title: 'SoundCloud', subtitle: 'ilka-ytb', url: 'https://soundcloud.com/ilka-ytb', icon: 'soundcloud.svg' },
     { title: 'Донат', subtitle: 'DonationAlerts', url: 'https://www.donationalerts.com/r/godlyecho812', icon: 'donation.svg' },
   ],
 };
